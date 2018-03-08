@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 /**
  *
@@ -33,11 +34,12 @@ public class PDFCreation {
         System.out.println("PDF created");
         
         document.close();*/
-        String path = "/home/jjesusmonroy/Documents/example.pdf";
+        String path = "/home/jjesusmonroy/Documents/Formato.pdf";
         //loadingFile(path);
         //removingPages(path, 3);
         //documentProperties(path);
-        insertingContent(path, 2);
+        //insertingContent(path, 4);
+        //readingTextFromPDF(path);
     }
     
     private static void loadingFile(String path){
@@ -53,7 +55,6 @@ public class PDFCreation {
             
             document.close();
         }catch(IOException e){
-            e.printStackTrace();
         }
         
     }
@@ -73,7 +74,6 @@ public class PDFCreation {
             document.close();
             
         }catch(IOException e){
-            e.printStackTrace();
         }
     }
     
@@ -100,34 +100,46 @@ public class PDFCreation {
             document.close();
         }
         catch(IOException e){
-            e.printStackTrace();
         }      
     }
     
     private static void insertingContent(String path, int pageToModified){
+        //This method only works adding 1 line
         File file = new File(path);
         PDDocument document;
         
         try{document = PDDocument.load(file);
         
         PDPage page = document.getPage(pageToModified);
-        PDPageContentStream contentStream = new PDPageContentStream(document,page);
-        contentStream.beginText();
-        contentStream.setFont(PDType1Font.COURIER, 14);
-        contentStream.newLineAtOffset(25, 500);
-        contentStream.showText("Addindg text to our pdf file at 25,500");
-        contentStream.endText();
-        contentStream.close();
+            try (PDPageContentStream contentStream = new 
+        PDPageContentStream(document,page)) {
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.COURIER, 14);
+                contentStream.setLeading(14.5f);
+                contentStream.newLineAtOffset(25, 500);
+                contentStream.showText("Addindg text to our pdf file at 25,500");
+                contentStream.newLine();  // Adding a new line like \n
+                contentStream.showText("1 more line because why not");
+                contentStream.endText();
+            }
         
         document.save(path);
         document.close();
         
         }catch(IOException e){
-            e.printStackTrace();
         }
-        
-        
-        
     }
+    
+    private static void readingTextFromPDF(String path){
+        File file = new File(path);
+        try(PDDocument document = PDDocument.load(file)) {
+            PDFTextStripper pdfStripper = new PDFTextStripper();
+            String text=pdfStripper.getText(document);
+            System.out.println(text);
+        }catch(IOException e){
+        }
+    }
+    
+    
     
 }
