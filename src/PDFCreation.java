@@ -28,12 +28,13 @@ public class PDFCreation {
         System.out.println("PDF created");
         
         document.close();*/
-        
-        loadingFile("/home/jjesusmonroy/Documents/example.pdf");
+        String path = "/home/jjesusmonroy/Documents/example.pdf";
+        //loadingFile(path);
+        removingPages(path, 3);
     }
     
-    private static void loadingFile(String ruta){
-        File file = new File(ruta);
+    private static void loadingFile(String path){
+        File file = new File(path);
         PDDocument document;
         try{
             document = PDDocument.load(file);
@@ -41,7 +42,7 @@ public class PDFCreation {
             
             document.addPage(new PDPage());
             
-            document.save(ruta);
+            document.save(path);
             
             document.close();
         }catch(IOException e){
@@ -49,5 +50,26 @@ public class PDFCreation {
         }
         
     }
+    
+    private static void removingPages(String path,int pageToRemove){
+        File file = new File(path);
+        PDDocument document;
+        
+        try{
+            document = PDDocument.load(file);
+            int Pages = document.getNumberOfPages();
+            System.out.println(Pages);
+            if(pageToRemove<Pages)document.removePage(pageToRemove);
+            
+            document.save(path);
+            
+            document.close();
+            
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+    
     
 }
