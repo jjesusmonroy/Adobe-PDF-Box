@@ -5,7 +5,10 @@
  */
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 
 /**
@@ -30,7 +33,8 @@ public class PDFCreation {
         document.close();*/
         String path = "/home/jjesusmonroy/Documents/example.pdf";
         //loadingFile(path);
-        removingPages(path, 3);
+        //removingPages(path, 3);
+        documentProperties(path);
     }
     
     private static void loadingFile(String path){
@@ -70,6 +74,34 @@ public class PDFCreation {
         }
     }
     
-    
+    private static void documentProperties(String path){
+        File file = new File(path);
+        PDDocument document;
+        
+        try{
+            document = PDDocument.load(file);
+            PDDocumentInformation pdd = document.getDocumentInformation();
+            pdd.setAuthor("jjesusmonroy");
+            pdd.setCreator("Best Creator");
+            pdd.setTitle("BEST PDF FILE IN THE WORLD");
+            pdd.setSubject("Everything a world's pdf file have to containt");
+            pdd.setKeywords("insert alot of keywords here please");
+            Calendar date = new GregorianCalendar();
+            date.set(2018, 3, 5);
+            pdd.setCreationDate(date);
+            date.set(2018,3,8);
+            pdd.setModificationDate(date);
+            
+            document.save(path);
+            System.out.println("propertes added succesfully");
+            document.close();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        
+             
+    }
     
 }
