@@ -10,6 +10,8 @@ import java.util.GregorianCalendar;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 /**
  *
@@ -34,7 +36,8 @@ public class PDFCreation {
         String path = "/home/jjesusmonroy/Documents/example.pdf";
         //loadingFile(path);
         //removingPages(path, 3);
-        documentProperties(path);
+        //documentProperties(path);
+        insertingContent(path, 2);
     }
     
     private static void loadingFile(String path){
@@ -98,10 +101,33 @@ public class PDFCreation {
         }
         catch(IOException e){
             e.printStackTrace();
+        }      
+    }
+    
+    private static void insertingContent(String path, int pageToModified){
+        File file = new File(path);
+        PDDocument document;
+        
+        try{document = PDDocument.load(file);
+        
+        PDPage page = document.getPage(pageToModified);
+        PDPageContentStream contentStream = new PDPageContentStream(document,page);
+        contentStream.beginText();
+        contentStream.setFont(PDType1Font.COURIER, 14);
+        contentStream.newLineAtOffset(25, 500);
+        contentStream.showText("Addindg text to our pdf file at 25,500");
+        contentStream.endText();
+        contentStream.close();
+        
+        document.save(path);
+        document.close();
+        
+        }catch(IOException e){
+            e.printStackTrace();
         }
         
         
-             
+        
     }
     
 }
