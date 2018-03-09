@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 /**
@@ -34,12 +35,14 @@ public class PDFCreation {
         System.out.println("PDF created");
         
         document.close();*/
-        String path = "/home/jjesusmonroy/Documents/Formato.pdf";
+        String path = "/home/jjesusmonroy/Documents/example.pdf";
+        String imgPath = "/home/jjesusmonroy/Documents/tec-png.png";
         //loadingFile(path);
         //removingPages(path, 3);
         //documentProperties(path);
         //insertingContent(path, 4);
         //readingTextFromPDF(path);
+        insertingImage(path, 6, imgPath);
     }
     
     private static void loadingFile(String path){
@@ -139,7 +142,17 @@ public class PDFCreation {
         }catch(IOException e){
         }
     }
-    
-    
-    
+    private static void insertingImage(String path,int page,String imgPath){
+        File file = new File(path);
+        try(PDDocument document = PDDocument.load(file)) {
+        PDPage pge = document.getPage(page);
+        PDImageXObject pdImage = PDImageXObject.createFromFile(imgPath,document);
+        
+        PDPageContentStream contentStream = new PDPageContentStream(document, pge);
+        contentStream.drawImage(pdImage, 70,250);
+        contentStream.close();
+        System.out.println("Image inserted");
+        document.save(path);
+        }catch(IOException e){}
+    }
 }
