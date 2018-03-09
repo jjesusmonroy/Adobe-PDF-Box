@@ -15,6 +15,7 @@ import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.interactive.action.PDActionJavaScript;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 /**
@@ -37,7 +38,7 @@ public class PDFCreation {
         System.out.println("PDF created");
         
         document.close();*/
-        String path = "/home/jjesusmonroy/Documents/example.pdf";
+        //String path = "/home/jjesusmonroy/Documents/example.pdf";
         String imgPath = "/home/jjesusmonroy/Documents/tec-png.png";
         //loadingFile(path);
         //removingPages(path, 3);
@@ -45,9 +46,44 @@ public class PDFCreation {
         //insertingContent(path, 4);
         //readingTextFromPDF(path);
         //insertingImage(path, 6, imgPath);
-        encryptingPDF(path, "1234");
+        //encryptingPDF(path, "1234");
+        //String path = "/home/jjesusmonroy/Documents/anotherpdf.pdf";
+        //creatingPDF(path);
+        //addingJS(path);
+        //addingPage(path);
+        //addingPage(path);
+        //addingPage(path);
+        //addingPage(path);
+        //insertingContent(path, 3);
+        //addingJS(path);
+        
+        String path = "/home/jjesusmonroy/Documents/otherpdf.pdf";
+        //creatingPDF(path);
+        //addingPage(path);
+        insertingContent(path, 0);
+        addingJS(path);
     }
     
+    private static void creatingPDF(String path){
+        PDDocument document = new PDDocument();
+        
+        try{document.save(path);
+        System.out.println("PDFCreated");
+        document.close();}catch(IOException e){}
+        
+    }
+    
+    private static void addingPage(String path){
+        File file = new File(path);
+        try{
+            PDDocument document = PDDocument.load(file);
+            PDPage blankPage = new PDPage();
+            document.addPage(blankPage);
+            document.save(path);
+            System.out.println("1 page added");
+            document.close();
+        }catch(IOException e){}
+    }
     private static void loadingFile(String path){
         File file = new File(path);
         PDDocument document;
@@ -127,6 +163,7 @@ public class PDFCreation {
                 contentStream.newLine();  // Adding a new line like \n
                 contentStream.showText("1 more line because why not");
                 contentStream.endText();
+                System.out.println("Information added");
             }
         
         document.save(path);
@@ -176,8 +213,23 @@ public class PDFCreation {
         
         document.save(path);
         
-        }catch(IOException e){}
+        }catch(IOException e){}        
+    }
+    
+    private static void addingJS(String path){
+        File file = new File(path);
+        try(PDDocument document = PDDocument.load(file)) {
+        String js = "app.alert( {cMsg: 'this is an example', nIcon: 3,"
+         + " nType: 0, cTitle: 'PDFBox Javascript example’} );";
+        PDActionJavaScript pda = new PDActionJavaScript(js);
         
+        document.getDocumentCatalog().setOpenAction(pda);
         
+        document.save(path);
+        System.out.println("js added succesfully");
+        
+}
+        catch(IOException e){
+        }        
     }
 }
