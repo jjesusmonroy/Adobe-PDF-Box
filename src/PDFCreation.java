@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -60,8 +63,10 @@ public class PDFCreation {
         String path = "/home/jjesusmonroy/Documents/otherpdf.pdf";
         //creatingPDF(path);
         //addingPage(path);
-        insertingContent(path, 0);
-        addingJS(path);
+        //insertingContent(path, 0);
+        //addingJS(path);
+        addingPage(path);
+        splittingPDF(path);
     }
     
     private static void creatingPDF(String path){
@@ -232,4 +237,21 @@ public class PDFCreation {
         catch(IOException e){
         }        
     }
+    private static void splittingPDF(String path){
+        File file = new File(path);
+        try(PDDocument document = PDDocument.load(file)) {
+            Splitter splitter = new Splitter();
+            List<PDDocument> pages = splitter.split(document);
+            Iterator<PDDocument> iterator = pages.listIterator();
+
+            int i = 1;
+            while(iterator.hasNext()){
+                PDDocument pd = iterator.next();
+                pd.save("/home/jjesusmonroy/Documents/otherpage"+ i++ +".pdf");
+            }
+                System.out.println("Multiple PDF's created");
+        }catch(IOException e){
+        }
+    }
+    
 }
