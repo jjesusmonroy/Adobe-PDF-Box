@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
@@ -60,13 +61,17 @@ public class PDFCreation {
         //insertingContent(path, 3);
         //addingJS(path);
         
-        String path = "/home/jjesusmonroy/Documents/otherpdf.pdf";
+//        String path = "/home/jjesusmonroy/Documents/otherpage1.pdf";
         //creatingPDF(path);
         //addingPage(path);
         //insertingContent(path, 0);
         //addingJS(path);
-        addingPage(path);
-        splittingPDF(path);
+        //addingPage(path);
+        //splittingPDF(path);
+        String path1 = "/home/jjesusmonroy/Documents/otherpage1.pdf";
+        String path2 = "/home/jjesusmonroy/Documents/otherpage2.pdf";
+        String destPath = "/home/jjesusmonroy/Documents/finalpdfform.pdf";
+        merginPDFS(path1, path2, destPath);
     }
     
     private static void creatingPDF(String path){
@@ -253,5 +258,28 @@ public class PDFCreation {
         }catch(IOException e){
         }
     }
+    
+    private static void merginPDFS(String path1, String path2,String destPath){
+        File file1 = new File(path1);
+        try{PDDocument doc1 = PDDocument.load(file1);
+        
+        File file2 = new File(path2);
+        PDDocument doc2 = PDDocument.load(file2);
+        
+        PDFMergerUtility pdfmerger = new PDFMergerUtility();
+        pdfmerger.setDestinationFileName(destPath);
+        
+        pdfmerger.addSource(file1);
+        pdfmerger.addSource(file2);
+        
+        pdfmerger.mergeDocuments();
+        
+        System.out.println("Files merged");
+        doc1.close();
+        doc2.close();
+        }catch(IOException e){}
+    }
+    
+    
     
 }
