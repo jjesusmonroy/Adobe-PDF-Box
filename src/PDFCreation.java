@@ -11,6 +11,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -42,7 +44,8 @@ public class PDFCreation {
         //documentProperties(path);
         //insertingContent(path, 4);
         //readingTextFromPDF(path);
-        insertingImage(path, 6, imgPath);
+        //insertingImage(path, 6, imgPath);
+        encryptingPDF(path, "1234");
     }
     
     private static void loadingFile(String path){
@@ -154,5 +157,27 @@ public class PDFCreation {
         System.out.println("Image inserted");
         document.save(path);
         }catch(IOException e){}
+    }
+    
+    private static void encryptingPDF(String path, String password){
+        File file = new File(path);
+        try(PDDocument document = PDDocument.load(file)) {
+        AccessPermission ap = new AccessPermission();
+        
+        StandardProtectionPolicy spp = new StandardProtectionPolicy(password,password,ap);
+        
+        spp.setEncryptionKeyLength(128);
+        
+        spp.setPermissions(ap);
+        
+        document.protect(spp);
+        
+        System.out.println("Document encrypted");
+        
+        document.save(path);
+        
+        }catch(IOException e){}
+        
+        
     }
 }
